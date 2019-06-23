@@ -500,7 +500,14 @@ static void sm5502_muic_detect_cable_wq(struct work_struct *work)
 {
 	struct sm5502_muic_info *info = container_of(to_delayed_work(work),
 				struct sm5502_muic_info, wq_detcable);
-	int ret;
+	unsigned int reg_data;
+	int ret, i;
+
+	/* Read interrupt register twice to clear pending interrupts */
+	for (i = 0; i < 2; ++i) {
+		regmap_read(info->regmap, SM5502_REG_INT1, &reg_data);
+		regmap_read(info->regmap, SM5502_REG_INT2, &reg_data);
+	}
 
 	/* Notify the state of connector cable or not  */
 	ret = sm5502_muic_cable_handler(info, true);
