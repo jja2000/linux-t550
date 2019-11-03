@@ -154,6 +154,23 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&usb_vbus_default>;
 	};
+
+	i2c-backlight {
+		compatible = "i2c-gpio";
+		sda-gpios = <&msmgpio 24 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&msmgpio 25 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		lp8558@2C {
+			compatible = "ti,lp8558-test";
+
+			reg = <0x2C>;
+
+			enable-gpios = <&msmgpio 69 GPIO_ACTIVE_HIGH>;
+		};
+	};
 };
 
 &dsi0 {
