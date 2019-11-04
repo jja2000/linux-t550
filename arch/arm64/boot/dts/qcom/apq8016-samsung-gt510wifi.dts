@@ -19,7 +19,6 @@
 
 		gpio = <&msmgpio 8 0>;
 		enable-active-high;
-		regulator-boot-on;
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&lcd_en_default>;
@@ -33,7 +32,6 @@
 
 		gpio = <&msmgpio 51 0>;
 		enable-active-high;
-		regulator-boot-on;
 
 		pinctrl-names = "default";
 		pinctrl-0 = <&buckbooster_en_default>;
