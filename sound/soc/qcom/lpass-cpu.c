@@ -25,6 +25,8 @@ static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
 	int ret;
 
+	dev_err(dai->dev, "Set sysclk: %d\n", dai->driver->id);
+
 	ret = clk_set_rate(drvdata->mi2s_osr_clk[dai->driver->id], freq);
 	if (ret)
 		dev_err(dai->dev, "error setting mi2s osrclk to %u: %d\n",
@@ -38,6 +40,8 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
 {
 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
 	int ret;
+
+	dev_err(dai->dev, "Startup: %d\n", dai->driver->id);
 
 	ret = clk_prepare_enable(drvdata->mi2s_osr_clk[dai->driver->id]);
 	if (ret) {
@@ -102,11 +106,11 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		switch (channels) {
 		case 1:
-			regval |= LPAIF_I2SCTL_SPKMODE_SD0;
+			regval |= LPAIF_I2SCTL_SPKMODE_SD1;
 			regval |= LPAIF_I2SCTL_SPKMONO_MONO;
 			break;
 		case 2:
-			regval |= LPAIF_I2SCTL_SPKMODE_SD0;
+			regval |= LPAIF_I2SCTL_SPKMODE_SD1;
 			regval |= LPAIF_I2SCTL_SPKMONO_STEREO;
 			break;
 		case 4:
