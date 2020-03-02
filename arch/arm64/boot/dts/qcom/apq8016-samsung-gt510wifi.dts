@@ -278,6 +278,50 @@
 	};
 };
 
+&camss {
+	status = "okay";
+
+	ports {
+		port@0 {
+			reg = <0>;
+			csiphy0_ep: endpoint {
+				clock-lanes = <1>;
+				data-lanes = <0 2>;
+				remote-endpoint = <>;
+			};
+		};
+	};
+};
+
+&soc {
+	cci@1b0c000 {
+		compatible = "qcom,msm8916-cci";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x1b0c000 0x1000>;
+		interrupts = <GIC_SPI 50 IRQ_TYPE_EDGE_RISING>;
+		clocks = <&gcc GCC_CAMSS_TOP_AHB_CLK>,
+			<&gcc GCC_CAMSS_CCI_AHB_CLK>,
+			<&gcc GCC_CAMSS_CCI_CLK>,
+			<&gcc GCC_CAMSS_AHB_CLK>;
+		clock-names = "camss_top_ahb", "cci_ahb",
+				"cci", "camss_ahb";
+		assigned-clocks = <&gcc GCC_CAMSS_CCI_AHB_CLK>,
+				 <&gcc GCC_CAMSS_CCI_CLK>;
+		assigned-clock-rates = <80000000>, <19200000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&cci0_default>;
+//		status = "disabled";
+
+		cci0: i2c-bus@0 {
+			reg = <0>;
+			clock-frequency = <400000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+	};
+};
+
 &dsi0 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&mdss_default>;
@@ -461,6 +505,18 @@
 		pinconf {
 			pins = "gpio51";
 			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	cci0_default: cci0_default {
+		pinmux {
+			function = "cci_i2c";
+			pins = "gpio29", "gpio30";
+		};
+		pinconf {
+			pins = "gpio29", "gpio30";
+			drive-strength = <16>;
 			bias-disable;
 		};
 	};
