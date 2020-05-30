@@ -281,6 +281,32 @@
 		compatible = "linux,extcon-usb-gpio";
 		vbus-gpio = <&msmgpio 2 GPIO_ACTIVE_HIGH>;
 	};
+
+	i2c-grip {
+		compatible = "i2c-gpio";
+		sda-gpios = <&msmgpio 53 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+		scl-gpios = <&msmgpio 54 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&grip_i2c_default>;
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		grip: sx9500@2B {
+			compatible = "semtech,sx9500";
+
+			vdd-supply = <&pm8916_l17>;
+			vddio-supply = <&pm8916_l15>;
+
+			reg = <0x2B>;
+			interrupt-parent = <&msmgpio>;
+			interrupts = <113 IRQ_TYPE_LEVEL_LOW>;
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&grip_int_default>;
+		};
+	};
 };
 
 &blsp_i2c2 {
@@ -476,6 +502,7 @@
 	l15 {
 		regulator-min-microvolt = <1800000>;
 		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
 	};
 
 	l16 {
@@ -486,6 +513,7 @@
 	l17 {
 		regulator-min-microvolt = <2850000>;
 		regulator-max-microvolt = <2850000>;
+		regulator-always-on;
 	};
 
 	l18 {
@@ -538,6 +566,30 @@
 		};
 		pinconf {
 			pins = "gpio52";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	grip_i2c_default: grip_i2c_default {
+		pinmux {
+			function = "gpio";
+			pins = "gpio53", "gpio54";
+		};
+		pinconf {
+			pins = "gpio53", "gpio54";
+			drive-strength = <2>;
+			bias-disable;
+		};
+	};
+
+	grip_int_default: grip_int_default {
+		pinmux {
+			function = "gpio";
+			pins = "gpio113";
+		};
+		pinconf {
+			pins = "gpio113";
 			drive-strength = <2>;
 			bias-disable;
 		};
